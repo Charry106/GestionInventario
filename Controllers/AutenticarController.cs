@@ -5,44 +5,43 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GestionInventario.Controllers
 {
-    
-    [Route("api/autenticacion")]
     [ApiController]
+    [Route("api/[Controller]")]
+    
     public class AutenticarController : ControllerBase
     {
         private readonly IUsuarioServicio _usuarioServicio;
-        private readonly IUsuarioRepositorio _usuarioRepositorio;
-        public AutenticarController(IUsuarioServicio usuarioServicio, IUsuarioRepositorio usuarioRepositorio)
+        //private readonly IUsuarioRepositorio _usuarioRepositorio;
+        public AutenticarController(IUsuarioServicio usuarioServicio)
         {
             _usuarioServicio = usuarioServicio;
-            _usuarioRepositorio = usuarioRepositorio;
+            //_usuarioRepositorio = usuarioRepositorio;
         }
 
         [HttpPost("Validar")]
-
-        public IActionResult ValidarUsuario([FromBody] LoginRequest request)
+        public IActionResult ValidarUsuario([FromBody] LoginRequest loginRequest)
         {
-            bool autenticado = _usuarioServicio.ValidarUsuario(request.Email, request.Password);
-            
-            if (autenticado)
+            //bool autenticado = _usuarioServicio.ValidarUsuario(request.Email, request.Password);
+            var esValido = _usuarioServicio.ValidarUsuario(loginRequest.Email, loginRequest.Password);
+            if (esValido)
             {
+                var usuario = _usuarioServicio.ObtenerUsuarioPorEmail(loginRequest.Email);
+
+                var token = Guid.NewGuid().ToString();
                 return Ok(new
                 {
-                    AutenticacionExitosa = false,
-                    Jwt = string.Empty,
-                    Mensaje = "Error al autenticar el usuario"
-                });
+                    AutenticacionExitosa = true,
+                    Jwt = token,
+                    Mensaje = $"Bienvenido {usuario.Nombre}{usuario.Apellido}"
+                }); 
             }
 
-            var usuario = _usuarioRepositorio.ObtenerUsuario(request.Email);
-
-            var token = Guid.NewGuid().ToString();
-            return Ok(new
+            return BadRequest(new
             {
-                AutenticacionExitosa = true,
-                Jwt = token,
-                Mensaje = $"Bienvenido {usuario.Nombre}{usuario.Apellido}"
-            });
+                AutenticacionExitosa = false,
+                Jwt = string.Empty,
+                Mensaje = "Error al autenticar el usuario"
+            });       
         }
     }
         

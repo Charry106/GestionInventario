@@ -1,32 +1,45 @@
 using GestionInventario.Datos;
+using GestionInventario.Datos.Negocio.Servicios;
 
 namespace GestionInventario.Datos.Repositorio
 {
     public class UsuarioRepositorio : IUsuarioRepositorio
     {
-        public static readonly List<Usuario> usuarios = new List<Usuario>();
-
+        
+        private static List<Usuario> usuarios;
+        
         static UsuarioRepositorio()
         {
-            for (int i = 0; i<=3; i++)
+            usuarios = new List<Usuario>
             {
-                var nombre = GeneradorDatos.NombreAleatorio();
-                var apellido = GeneradorDatos.ApellidoAleatorio();
-                usuarios.Add(new Usuario
+                new Usuario
                 {
-                    Id = i,
-                    Nombre = nombre,
-                    Apellido = apellido,
-                    TipoDocumento = GeneradorDatos.TipoAleatorio(),
-                    NumeroDocumento = GeneradorDatos.DocumentoAleatorio(),
-                    Direccion = GeneradorDatos.DireccionAleatoria(),
-                    Telefono = GeneradorDatos.TelefonoAleatorio(),
-                    Email = GeneradorDatos.EmailAleatorio(nombre, apellido),
-                    Contraseña = GeneradorDatos.ContraseñaAleatorio(),
+                    Id = 1,
+                    Nombre = "Juan",
+                    Apellido = "Perez",
+                    TipoDocumento = "CC",
+                    NumeroDocumento = "123456789",
+                    Direccion = "Calle 1 # 1-1",
+                    Telefono = "1234567",
+                    Email = "juan.perez@correo.com",
+                    Contraseña = "123456",
                     EstadoActivo = true
-                });
+                },
 
-            }
+                new Usuario
+                {
+                    Id = 2,
+                    Nombre = "Maria",
+                    Apellido = "Rodriguez",
+                    TipoDocumento = "CC",
+                    NumeroDocumento = "987654321",
+                    Direccion = "Calle 2 # 2-2",
+                    Telefono = "7654321",
+                    Email = "maria.rodriguez@correo.com",
+                    Contraseña = "987654",
+                    EstadoActivo = true
+                }
+            };
         }
 
         public void CrearUsuario(Usuario usuario)
@@ -34,18 +47,18 @@ namespace GestionInventario.Datos.Repositorio
             usuarios.Add(usuario);
         }
 
-        public void ModificarUsuario(Usuario usuario)
+        public void ModificarUsuario(Usuario usuarioModificado)
         {
-            var usuarioExistente = usuarios.FirstOrDefault(u => u.Id == usuario.Id);
+            var usuarioExistente = usuarios.FirstOrDefault(u => u.Id == usuarioModificado.Id);
             if (usuarioExistente != null)
             {
-                usuarioExistente.Nombre = usuario.Nombre;
-                usuarioExistente.Apellido = usuario.Apellido;
-                usuarioExistente.TipoDocumento = usuario.TipoDocumento;
-                usuarioExistente.NumeroDocumento = usuario.NumeroDocumento;
-                usuarioExistente.Direccion = usuario.Direccion;
-                usuarioExistente.Telefono = usuario.Telefono;
-                usuarioExistente.EstadoActivo = usuario.EstadoActivo;
+                usuarioExistente.Nombre = usuarioModificado.Nombre;
+                usuarioExistente.Apellido = usuarioModificado.Apellido;
+                usuarioExistente.TipoDocumento = usuarioModificado.TipoDocumento;
+                usuarioExistente.NumeroDocumento = usuarioModificado.NumeroDocumento;
+                usuarioExistente.Direccion = usuarioModificado.Direccion;
+                usuarioExistente.Telefono = usuarioModificado.Telefono;
+                usuarioExistente.EstadoActivo = usuarioModificado.EstadoActivo;
             }
         }
         public Usuario? ObtenerUsuario(string email)
@@ -56,6 +69,7 @@ namespace GestionInventario.Datos.Repositorio
         {
             return usuarios;
         }
+        /*
         public void ActivarUsuario(int id)
         {
             var usuario = usuarios.FirstOrDefault(u => u.Id == id);
@@ -66,7 +80,7 @@ namespace GestionInventario.Datos.Repositorio
         {
             var usuario = usuarios.FirstOrDefault(u => u.Id == id);
             if (usuario != null)usuario.EstadoActivo = false;
-        }
+        }*/
         
     }
 }

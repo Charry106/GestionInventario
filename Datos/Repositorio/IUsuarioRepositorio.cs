@@ -6,7 +6,7 @@ namespace GestionInventario.Datos.Repositorio
         void ModificarUsuario(Usuario usuario);
         Usuario? ObtenerUsuario(string correo);
         List<Usuario> ObtenerTodos();
-        void ActivarUsuario(int id);
-        void InactivarUsuario(int id); 
+        //void ActivarUsuario(int id);
+        //void InactivarUsuario(int id); 
     }
 }

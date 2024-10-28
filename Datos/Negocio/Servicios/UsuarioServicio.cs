@@ -10,16 +10,21 @@ namespace GestionInventario.Datos.Negocio.Servicios
             _usuarioRepositorio = usuarioRepositorio;
         }
         
-        public bool ValidarUsuario(string Email, string Password)
+        public bool ValidarUsuario(string email, string password)
         {
-            var usuario = _usuarioRepositorio.ObtenerUsuario(Email);
+            var usuario = _usuarioRepositorio.ObtenerUsuario(email);
 
-            if (usuario != null && usuario.Contraseña == Password)
+            if (usuario != null && usuario.Contraseña == password)
             {
                 return true;
             }
 
             return false;
         } 
+
+        public Usuario? ObtenerUsuarioPorEmail(string email)
+        {
+            return _usuarioRepositorio.ObtenerUsuario(email);
+        }
     }
 }

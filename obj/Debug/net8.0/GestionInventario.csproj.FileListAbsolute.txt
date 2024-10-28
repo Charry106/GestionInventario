@@ -31,3 +31,4 @@ c:\Users\achar\OneDrive\Escritorio\UTP\Laboratorio de Software\Proyecto\API\Gest
 c:\Users\achar\OneDrive\Escritorio\UTP\Laboratorio de Software\Proyecto\API\GestionInventario\obj\Debug\net8.0\GestionInventario.pdb
 c:\Users\achar\OneDrive\Escritorio\UTP\Laboratorio de Software\Proyecto\API\GestionInventario\obj\Debug\net8.0\GestionInventario.genruntimeconfig.cache
 c:\Users\achar\OneDrive\Escritorio\UTP\Laboratorio de Software\Proyecto\API\GestionInventario\obj\Debug\net8.0\ref\GestionInventario.dll
+c:\Users\achar\OneDrive\Escritorio\UTP\Laboratorio de Software\Proyecto\API\GestionInventario\obj\Debug\net8.0\GestionInventario.sourcelink.json
