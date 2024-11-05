@@ -1,8 +1,14 @@
+using System.Threading.Tasks;
+using GestionInventario.Datos;
+using Microsoft.AspNetCore.Identity;
+
 namespace GestionInventario.Datos.Negocio.Servicios
 {
     public interface IUsuarioServicio
     {
-        bool ValidarUsuario(string email, string password);
-        Usuario ObtenerUsuarioPorEmail(string email);
+        Task<bool> ValidarCredencialesAsync(string email, string password);
+        Task<Usuario> ObtenerUsuarioPorEmailAsync(string email);
+        Task<IdentityResult> CrearUsuarioAsync(Usuario usuario, string password);
+
     }
 }

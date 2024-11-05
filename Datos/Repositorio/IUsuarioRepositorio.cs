@@ -1,12 +1,12 @@
-namespace GestionInventario.Datos.Repositorio 
+using System.Threading.Tasks;
+using GestionInventario.Datos;
+using Microsoft.AspNetCore.Identity;
+
+namespace GestionInventario.Datos.Repositorio
 {
-    public interface IUsuarioRepositorio 
+    public interface IUsuarioRepositorio
     {
-        void CrearUsuario(Usuario usuario);
-        void ModificarUsuario(Usuario usuario);
-        Usuario? ObtenerUsuario(string correo);
-        List<Usuario> ObtenerTodos();
-        //void ActivarUsuario(int id);
-        //void InactivarUsuario(int id); 
+        Task<Usuario> ObtenerUsuarioPorEmailAsync(string email);
+        Task<IdentityResult> CreateUserAsync(Usuario user, string password);
     }
 }

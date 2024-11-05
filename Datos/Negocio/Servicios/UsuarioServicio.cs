@@ -1,30 +1,36 @@
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
+using GestionInventario.Datos;
 using GestionInventario.Datos.Repositorio;
 
 namespace GestionInventario.Datos.Negocio.Servicios
 {
     public class UsuarioServicio : IUsuarioServicio
     {
-        private readonly IUsuarioRepositorio _usuarioRepositorio;
-        public UsuarioServicio(IUsuarioRepositorio usuarioRepositorio)
+        private readonly UserManager<Usuario> _userManager;
+
+        public UsuarioServicio(UserManager<Usuario> userManager)
         {
-            _usuarioRepositorio = usuarioRepositorio;
+            _userManager = userManager;
         }
-        
-        public bool ValidarUsuario(string email, string password)
+
+        // Implementación de CrearUsuarioAsync que devuelve IdentityResult
+        public async Task<IdentityResult> CrearUsuarioAsync(Usuario usuario, string password)
         {
-            var usuario = _usuarioRepositorio.ObtenerUsuario(email);
+            return await _userManager.CreateAsync(usuario, password);
+        }
 
-            if (usuario != null && usuario.Contraseña == password)
-            {
-                return true;
-            }
-
-            return false;
-        } 
-
-        public Usuario? ObtenerUsuarioPorEmail(string email)
+        public async Task<Usuario> ObtenerUsuarioPorEmailAsync(string email)
         {
-            return _usuarioRepositorio.ObtenerUsuario(email);
+            return await _userManager.FindByEmailAsync(email);
+        }
+
+        public async Task<bool> ValidarCredencialesAsync(string email, string password)
+        {
+            var usuario = await _userManager.FindByEmailAsync(email);
+            if (usuario == null) return false;
+
+            return await _userManager.CheckPasswordAsync(usuario, password);
         }
     }
 }

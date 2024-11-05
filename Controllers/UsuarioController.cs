@@ -1,6 +1,9 @@
-using GestionInventario.Datos;
-using GestionInventario.Datos.Repositorio;
 using Microsoft.AspNetCore.Mvc;
+using GestionInventario.Datos.Negocio.Servicios;
+using GestionInventario.Datos;
+using GestionInventario.Datos.DTOs;
+using System.Threading.Tasks;
+using MySqlX.XDevAPI.Common;
 
 namespace GestionInventario.Controllers
 {
@@ -8,78 +11,41 @@ namespace GestionInventario.Controllers
     [Route("api/usuarios")]
     public class UsuarioController : ControllerBase
     {
-        private readonly IUsuarioRepositorio _usuarioRepositorio;
-        public UsuarioController(IUsuarioRepositorio usuarioRepositorio)
+        private readonly IUsuarioServicio _usuarioServicio;
+
+        public UsuarioController(IUsuarioServicio usuarioServicio)
         {
-            _usuarioRepositorio = usuarioRepositorio;
+            _usuarioServicio = usuarioServicio;
         }
 
-        [HttpGet("Buscar Usuario por email")]
-        public ActionResult<Usuario> GetUsuarioByEmail(string email)
+        [HttpPost("CrearUsuario")]
+        public async Task<IActionResult> CrearUsuario([FromBody] UserCreateDTO userDto)
         {
-            var usuario = _usuarioRepositorio.ObtenerUsuario(email);
-
-            if (usuario == null) return NotFound("Usuario no encontrado");
-            return Ok(usuario);
-        }
-              
-        [HttpGet("Obtener todos los usuarios")]
-        public ActionResult<List<Usuario>> GetAllUsuarios()
-        {
-           return Ok(_usuarioRepositorio.ObtenerTodos());
-        }
-
-        [HttpPost("Crear Usuario")]
-        public ActionResult CrearUsuario([FromBody]Usuario usuario)
-        {
-            _usuarioRepositorio.CrearUsuario(usuario);
-            return Ok("Usuario creado exitosamente");
-        }
-
-        [HttpPut("Modificar Usuario")]
-        public ActionResult ModificarUsuario(string email,[FromBody]Usuario usuarioActualizado)
-        {
-            var usuarioExistente = _usuarioRepositorio.ObtenerUsuario(email);
-
-            if (usuarioExistente == null) 
+            var usuario = new Usuario
             {
-                return NotFound("Usuario no encontrado");
-            }
+                UserName = userDto.Email,
+                Email = userDto.Email,
+                Nombre = userDto.Nombre,
+                Apellido = userDto.Apellido,
+                TipoDocumento = userDto.TipoDocumento,
+                NumeroDocumento = userDto.NumeroDocumento,
+                Direccion = userDto.Direccion,
+                Telefono = userDto.Telefono,
+                EstadoActivo = userDto.EstadoActivo
+            }; 
 
-            usuarioExistente.Nombre = usuarioActualizado.Nombre;
-            usuarioExistente.Apellido = usuarioActualizado.Apellido;
-            usuarioExistente.TipoDocumento = usuarioActualizado.TipoDocumento;
-            usuarioExistente.NumeroDocumento = usuarioActualizado.NumeroDocumento;
-            usuarioExistente.Direccion = usuarioActualizado.Direccion;
-            usuarioExistente.Telefono = usuarioActualizado.Telefono;
+           var result = await _usuarioServicio.CrearUsuarioAsync(usuario, userDto.Password);
+            if (result.Succeeded)
+            return Ok("Usuario creado exitosamente");
 
-            usuarioExistente.EstadoActivo = usuarioActualizado.EstadoActivo;
-
-            _usuarioRepositorio.ModificarUsuario(usuarioExistente);
-
-            return Ok("Usuario modificado exitosamente");
-
-        }
-/*
-        [HttpPut("Modificar Usuario")]
-        public ActionResult ModificarUsuario([FromBody] Usuario usuario)
-        {
-           _usuarioRepositorio.ModificarUsuario(usuario);
-           return Ok("Usuario modificado exitosamente");
+            return BadRequest(result.Errors);
         }
 
-        [HttpPut("Activar")]
-        public ActionResult ActivarUsuario(int id)
+        [HttpGet("BuscarPorEmail")]
+        public async Task<IActionResult> BuscarUsuarioPorEmail(string email)
         {
-            _usuarioRepositorio.ActivarUsuario(id);
-            return Ok("Usuario activado exitosamente");
+            var usuario = await _usuarioServicio.ObtenerUsuarioPorEmailAsync(email);
+            return usuario == null ? NotFound("Usuario no encontrado") : Ok(usuario);
         }
-
-        [HttpPut("Inactivar")]
-        public ActionResult InactivarUsuario(int id)
-        {
-            _usuarioRepositorio.InactivarUsuario(id);
-            return Ok("Usuario inactivado exitosamente");
-        }*/
     }
 }
